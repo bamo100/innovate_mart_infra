@@ -4,9 +4,13 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'innovartMart-infra/**'
   push:
     branches:
       - main
+    paths:
+      - 'innovartMart-infra/**'
 
 permissions:
   id-token: write
@@ -19,6 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: "us-east-1"
+    
+    defaults:
+      run:
+        working-directory: ./innovartMart-infra
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -31,7 +40,6 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          # Supports OIDC (recommended) or traditional Access Keys via secrets
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -76,3 +84,14 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
+
+      - name: Deploy Kubernetes Application
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Waiting 30 seconds for EKS API and IAM permissions to propagate..."
+          sleep 30
+          echo "Updating kubeconfig..."
+          aws eks update-kubeconfig --name project-bedrock-cluster --region us-east-1
+          echo "Setting permissions and running deploy.sh..."
+          chmod +x ./kubernetes/deploy.sh
+          ./kubernetes/deploy.sh

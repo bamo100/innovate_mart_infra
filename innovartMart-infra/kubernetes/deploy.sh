@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CHART_DIR="${SCRIPT_DIR}/../../retail-store-sample-app/src/app/chart"
 NAMESPACE="retail-app"
 PROJECT_NAME="project-bedrock"
-# Path to the helm chart in the other repository
-CHART_DIR="./retail-store-sample-app/src/app/chart"
 
 echo "=========================================="
 echo " Starting Retail Store Deployment to EKS  "
@@ -44,7 +44,7 @@ kubectl create secret generic db-credentials-postgres \
   --from-literal=RETAIL_ORDERS_PERSISTENCE_USERNAME=${POSTGRES_USER} \
   --from-literal=RETAIL_ORDERS_PERSISTENCE_PASSWORD=${POSTGRES_PASS} \
   --dry-run=client -o yaml | kubectl apply -f -
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 CERT_ARN=$(cd "${SCRIPT_DIR}/.." && terraform output -raw acm_certificate_arn)
 
 # 5. Deploy Helm Chart with Injected Endpoints
@@ -52,14 +52,14 @@ echo "[5/5] Injecting RDS endpoints and deploying Helm chart..."
 sed -e "s/TO_BE_REPLACED_MYSQL_ENDPOINT/${MYSQL_HOST}/g" \
     -e "s/TO_BE_REPLACED_POSTGRES_ENDPOINT/${POSTGRES_HOST}/g" \
     -e "s|TO_BE_REPLACED_CERT_ARN|${CERT_ARN}|g" \
-    kubernetes/values-production.yaml > kubernetes/values-injected.yaml
+    "${SCRIPT_DIR}/values-production.yaml" > "${SCRIPT_DIR}/values-injected.yaml"
 
 echo "Updating Helm dependencies..."
-helm dependency update ${CHART_DIR}
+helm dependency update "${CHART_DIR}"
 
-helm upgrade --install retail-store ${CHART_DIR} \
+helm upgrade --install retail-store "${CHART_DIR}" \
   --namespace ${NAMESPACE} \
-  -f kubernetes/values-injected.yaml
+  -f "${SCRIPT_DIR}/values-injected.yaml"
 
 echo "=========================================="
 echo " Deployment Successful!                   "
