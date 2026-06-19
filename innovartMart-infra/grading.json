@@ -1,0 +1,42 @@
+{
+  "acm_certificate_arn": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:acm:us-east-1:691416125683:certificate/1e325dc6-b4f9-4c01-b87a-1f2f978bbab7"
+  },
+  "assets_bucket_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "bedrock-assets-alt-soe-025-5051"
+  },
+  "cluster_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "https://617E9C00B36BAF05C1EC44F42ADDF1D5.gr7.us-east-1.eks.amazonaws.com"
+  },
+  "cluster_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "project-bedrock-cluster"
+  },
+  "github_actions_role_arn": {
+    "sensitive": false,
+    "type": "string",
+    "value": "arn:aws:iam::691416125683:role/project-bedrock-github-actions"
+  },
+  "region": {
+    "sensitive": false,
+    "type": "string",
+    "value": "us-east-1"
+  },
+  "retail_store_url": {
+    "sensitive": false,
+    "type": "string",
+    "value": "https://k8s-retailap-ui-6039ab69e6-1519555346.us-east-1.elb.amazonaws.com"
+  },
+  "vpc_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-065b56c47e441abcb"
+  }
+}

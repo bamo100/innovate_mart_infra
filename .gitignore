@@ -1,0 +1,18 @@
+# OS Files
+.DS_Store
+Thumbs.db
+*.db
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local Environment
+.env
+.env.local
+.direnv/

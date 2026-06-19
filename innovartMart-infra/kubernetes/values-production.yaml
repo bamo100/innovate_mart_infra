@@ -1,0 +1,61 @@
+# Production Overrides for AWS Retail Store Sample App
+
+ui:
+  service:
+    type: NodePort
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+      alb.ingress.kubernetes.io/certificate-arn: "TO_BE_REPLACED_CERT_ARN"
+
+# 1. Catalog Service (MySQL)
+catalog:
+  mysql:
+    create: false
+  app:
+    persistence:
+      provider: mysql
+      endpoint: "TO_BE_REPLACED_MYSQL_ENDPOINT"
+      database: retailapp
+      secret:
+        create: false
+        name: db-credentials-mysql
+
+# 2. Orders Service (PostgreSQL + RabbitMQ)
+orders:
+  postgresql:
+    create: false
+  rabbitmq:
+    create: true
+  app:
+    persistence:
+      provider: postgresql
+      endpoint: "TO_BE_REPLACED_POSTGRES_ENDPOINT"
+      database: retailapp
+      secret:
+        create: false
+        name: db-credentials-postgres
+    messaging:
+      provider: rabbitmq
+
+# 3. Cart Service (DynamoDB)
+cart:
+  dynamodb:
+    create: false
+  app:
+    persistence:
+      provider: dynamodb
+      dynamodb:
+        tableName: retail-app-carts
+
+# 4. Checkout Service (Redis)
+checkout:
+  redis:
+    create: true
+  app:
+    persistence:
+      provider: redis
