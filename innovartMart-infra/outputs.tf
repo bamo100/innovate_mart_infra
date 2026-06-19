@@ -35,5 +35,5 @@ output "acm_certificate_arn" {
 
 output "retail_store_url" {
   description = "The ALB URL to access the Retail Store"
-  value       = "https://k8s-retailap-ui-6039ab69e6-1519555346.us-east-1.elb.amazonaws.com"
+  value       = "https://k8s-retailap-ui-6039ab69e6-1164910674.us-east-1.elb.amazonaws.com"
 }
