@@ -6,11 +6,14 @@ on:
       - main
     paths:
       - 'innovartMart-infra/**'
+      - '.github/workflows/**'
   push:
     branches:
       - main
     paths:
       - 'innovartMart-infra/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
 
 permissions:
   id-token: write
